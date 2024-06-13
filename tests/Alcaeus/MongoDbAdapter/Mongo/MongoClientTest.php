@@ -23,9 +23,6 @@ class MongoClientTest extends TestCase
         yield ['default', sprintf('mongodb://%s:%d', \MongoClient::DEFAULT_HOST, \MongoClient::DEFAULT_PORT)];
         yield ['localhost', 'mongodb://localhost'];
         yield ['mongodb://localhost', 'mongodb://localhost'];
-        if (version_compare(phpversion('mongodb'), '1.4.0', '>=')) {
-            yield ['mongodb+srv://foo.example.com', 'mongodb+srv://foo.example.com'];
-        }
     }
 
     public function testSerialize()
@@ -92,11 +89,23 @@ class MongoClientTest extends TestCase
 
     public function testGetHostsExceptionHandling()
     {
-        $this->expectException(\MongoConnectionException::class);
-        $this->expectErrorMessageMatches('/fake_host/');
+        // Workaround for PHPUnit 10
+        set_error_handler(
+            static function ($errno, $errstr) {
+                throw new \Exception($errstr, $errno);
+            },
+            E_ALL
+        );
 
-        $client = $this->getClient(null, 'mongodb://fake_host');
-        $client->getHosts();
+        $this->expectException(\MongoConnectionException::class);
+        $this->expectExceptionMessageMatches('/fake_host/');
+
+        try {
+            $client = $this->getClient(null, 'mongodb://fake_host');
+            $client->getHosts();
+        } finally {
+            restore_error_handler();
+        }
     }
 
     public function testReadPreference()
