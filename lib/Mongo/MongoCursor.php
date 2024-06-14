@@ -295,7 +295,7 @@ class MongoCursor extends AbstractCursor implements Iterator, Countable, MongoCu
     public function limit($num)
     {
         $this->errorIfOpened();
-        $this->limit = $num;
+        $this->limit = intval($num);
 
         return $this;
     }
@@ -356,7 +356,7 @@ class MongoCursor extends AbstractCursor implements Iterator, Countable, MongoCu
     public function skip($num)
     {
         $this->errorIfOpened();
-        $this->skip = $num;
+        $this->skip = intval($num);
 
         return $this;
     }
