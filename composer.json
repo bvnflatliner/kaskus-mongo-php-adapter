@@ -1,5 +1,5 @@
 {
-    "name": "alcaeus/mongo-php-adapter",
+    "name": "bvnflatliner/kaskus-mongo-php-adapter",
     "type": "library",
     "description": "Adapter to provide ext-mongo interface on top of mongo-php-library",
     "keywords": ["mongodb", "database"],
